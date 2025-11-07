@@ -1,0 +1,194 @@
+/* Custom Styles for Weather App */
+
+/* Smooth scrollbar */
+
+::-webkit-scrollbar{
+  width: 8px;
+}
+
+::-webkit-scrollbar-track{
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb{
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover{
+  background: rgba(255, 255, 255, 0.5);
+}
+
+/* Firefox scrollbar */
+
+*{
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.3) rgba(255, 255, 255, 0.1);
+}
+
+/* Respected reduced motion preference */
+
+@media(prefers-reduced-motion: reduce){
+  *,
+  *::before,
+  *::after{
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Custom animations */
+
+@keyframes float{
+  0%, 100%{
+    transform:  translateY(0px);
+  }
+  50%{
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes shimmer{
+  0%{
+    background-position: -200px 0;
+  }
+  100%{
+    background-position: calc(200px + 100%) 0;
+  }
+}
+
+/* Floating animation for weather icons */
+
+.float-animation{
+  animation: float 3s ease-in-out infinite;
+}
+
+/* Shimmer effect for loading states */
+
+.shimmer{
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2) transparent);
+  background-size: 200px 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+/* Glass morphism effect enhancement */
+
+.glass-effect{
+  background: rgba(255, 255, 255, 0.1);
+  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Hover effects for interactive elements */
+
+.interactive-card{
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.interactive-card:hover{
+  transform: translateY(-5px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+}
+
+/* Weather condition specific backgrounds */
+
+.weather-clear{
+  background: linear-gradient(135deg, #74b9ff, #0984e3);
+}
+
+.weather-clouds{
+  background: linear-gradient(135deg, #636e72, #2d3436);
+}
+
+.weaather-rain{
+  background: linear-gradient(135deg, #74b9ff, #0984e3);
+}
+
+.weather-snow{
+  background: linear-gradient(135deg, #ddd6fe, #8b5cf6);
+}
+
+.weather-thunderstrom{
+  background: linear-gradient(135deg, #2d3436, #636e72);
+}
+
+/* Responsive text sizing */
+
+@media(max-width: 640px){
+  .responsive-text-lg{
+    font-size: 1rem;
+  }
+
+  .responsive-text-xl{
+    font-size: 1.25rem;
+  }
+
+  .responsive-text-2xl{
+    font-size: 1.5rem;
+  }
+}
+
+/* Loading skeleton */
+
+.skeleton{
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.1) 25%, rgba(255, 255, 255, 0.2) 50%, rgba(255, 255, 255, 0.1) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+/* Pulse effect for important elements */
+
+.pulse-glow{
+  animation: pulse-glow 2s infinite;
+}
+
+@keyframes pluse-glow{
+  0%, 100%{
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+  }
+  50%{
+    box-shadow: 0 0 30px rgba(255, 255, 255, 0.6);
+  }
+}
+
+/* Custom focus styles */
+
+input:focus{
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.3);
+}
+
+button:focus{
+  outline: 2px solid rgba(255, 255, 255, 0.5);
+  outline-offset: 2px;
+}
+
+/* Weather icon animations */
+
+.weather-icon-sunny{
+  animation: rotate 20s linear infinite;
+}
+
+@keyframes rotate{
+  from{
+    transform: rotate(0deg);
+  }
+  to{
+    transform: rotate(360deg);
+  }
+}
+
+.weather-icon-rainy{
+  animation: bounce 1s ease-in-out infinte alternate;
+}
+
+@keyframes bounce{
+  from{
+    transform: translateY(0px);
+  }
+  to{
+    transform: translateY(-5px);
+  }
+}
