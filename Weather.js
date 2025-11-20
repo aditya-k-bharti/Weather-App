@@ -108,19 +108,25 @@ class WeatherApp{
     const settingsHTML = `
     <div id="settingsPanel" class="fixed top-4 right-4 z-40">
       <button id="settingsBtn" class="bg-white/20 backdrop-blur-md text-white p-3 rounded-full hover:bg-white/30 transition-all duration-300 shadow-lg">⚙️</button>
+
       <div id="settingsDropDown" class="hidden absolute right-0 mt-2 bg-white/10 backdrop-blur-md rounded-2xl p-4 shadow-xl border border-white/20 min-w-48">
         <h3 id="settingsTitle" class="text-white font-semibold mb-3 text-sm">Settings</h3>
         <div class="space-y-3">
+
           <p id="languageLabel" class="text-white/80 text-xs mb-2">Language</p>
-          <div class="space-y-2>
-            <label class="flex items-center text-white cursor-pointer hover:bg-white/10 p-2 rounded-lg transition-all>
-              <input type="radio" name="language" value="en" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600 mr-3" checked>
+
+          <div class="space-y-2">
+
+            <label class="flex items-center text-white cursor-pointer hover:bg-white/10 p-2 rounded-lg transition-all">
+              <input type="radio" name="language" value="en" class="langRadio mr-3" checked>
               <span class="text-sm">🇺🇸 English</span>
             </label>
-            <label class="flex items-center text-white cursor-pointer hover:bg-white/10 p-2 rounded-lg transition-all>
-              <input type="radio" name="language" value="hi" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600 mr-3">
+
+            <label class="flex items-center text-white cursor-pointer hover:bg-white/10 p-2 rounded-lg transition-all">
+              <input type="radio" name="language" value="hi" class="langRadio mr-3">
               <span class="text-sm">🇮🇳 हिंदी</span>
             </label>
+
           </div>
         </div>
       </div>
@@ -134,23 +140,21 @@ class WeatherApp{
     setTimeout(()=>{
       const settingsBtn = document.getElementById('settingsBtn');
       const settingsDropdown = document.getElementById('settingsDropDown');
-      const languageInputs = document.querySelectorAll('input[name="language"]');
+      const languageInputs = document.querySelectorAll('.langRadio');
 
-      if(settingsBtn && settingsDropdown){
-        settingsBtn.addEventListener('click', (e)=>{
-          e.stopPropagation();
-          settingsDropdown.classList.toggle('hidden');
-        });
+      settingsBtn.addEventListener('click', (e)=>{
+        e.stopPropagation();
+        settingsDropdown.classList.toggle('hidden');
+      });
 
-        document.addEventListener('click', (e)=>{
-          if(!settingsDropdown.contains(e.target) && !settingsBtn.contains(e.target)){
-            settingsDropdown.classList.add('hidden');
-          }
-        });
-      }
+      document.addEventListener('click', (e)=>{
+        if(!settingsDropdown.contains(e.target) && !settingsBtn.contains(e.target)){
+          settingsDropdown.classList.add('hidden');
+        }
+      });
 
-      languageInputs.forEach(input =>{
-        input.addEventListener('change', (e)=>{
+      languageInputs.forEach((radio) =>{
+        radio.addEventListener('change', (e)=>{
           console.log('Language changed to:', e.target.value);
           this.currentLanguage = e.target.value;
           this.updateLanguage();
@@ -197,7 +201,7 @@ class WeatherApp{
       loadingH2.textContent = t.loading;
     }
     if(loadingP){
-      loadingP.textContent = t.placeholder
+      loadingP.textContent = t.pleaseWait;
     }
 
     // Update settings panel 
@@ -209,7 +213,7 @@ class WeatherApp{
       settingsTitle.textContent = t.settings;
     }
     if(languageLabel){
-      languageLabel.textContent = t.language;
+      languageLabel.textContent = t.Language;
     }
 
     // Update weather details labels if weather is displayed
@@ -580,39 +584,56 @@ class WeatherApp{
 
   displayForecast(dailyData, t){
     const forecastContainer = document.getElementById('forecast');
-    if(forecastContainer){
-      return;
-    }
-
     forecastContainer.innerHTML = '';
 
+    const today = new Date();
+
+    const weekDays = this.currentLanguage == 'hi' ? ['रविवार', 'सोमवार', 'मंगलवार', 'बुधवार', 'गुरुवार', 'शुक्रवार', 'शनिवार'] : ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+
     for(let i = 0; i < 5; i++){
-      const dayElement = document.createElement('div');
-      dayElement.className = 'bg-white/10 rounded-2xl p-4 text-center interactive-card transform transition-all duration-300 hover:scale-105';
-      dayElement.style.animationDelay = `${i * 0.1}s`;
-      dayElement.style.opacity = '0';
-      dayElement.style.transform = 'translateY(20px)';
+      const dateObj = new Date();
+      dateObj.setDate(today.getDate() + i);
+
+      let label = '';
+      if(i === 0){
+        label = this.currentLanguage === 'hi' ? 'आज' : 'Today';
+      } else if(i === 1){
+        label = this.currentLanguage === 'hi' ? 'कल' : 'Tommorow'
+      } else{
+        label = weekDays[dateObj.getDay()];
+      }
+
+      const dateLabel = dateObj.toLocaleDateString(
+        this.currentLanguage === 'hi' ? 'hi-IN' : 'en-US', { day: 'numeric', month: 'short' }
+      );
 
       const weatherCode = dailyData?.weather_code?.[i] || 0;
-      const maxTemp = dailyData?.temperature_2m_max?.[i] || (20 + Math.random() * 15);
-      const minTemp = dailyData?.temperature_2m_min?.[i] || (15 + Math.random() * 10);
+      const maxTemp = dailyData?.temperature_2m_max?.[i] ?? 25;
+      const minTemp = dailyData?.temperature_2m_min?.[i] ?? 18;
 
-      dayElement.innerHTML = `
-        <div class="text-white/80 text-sm mb-2 font-medium">${t.days[i]}</div>
-        <div class="text-4xl mb-2 float-animation">${this.getWeatherIcon(weatherCode)}</div>
+      const card = document.createElement('div');
+      card.className = 'bg-white/10 rounded-2xl p-4 text-center interactive-card transform transition-all duration-300 hover:scale-105';
+
+      card.innerHTML = `
+        <div class="text-white font-semibold mb-1">${label}</div>
+        <div class="text-white font-semibold mb-2">${dateLabel}</div>
+
+        <div class='text-4xl mb-2 float-animation'>${this.getWeatherIcon(weatherCode)}</div>
+
         <div class="text-white font-bold text-lg">${Math.round(maxTemp)}°</div>
         <div class="text-white/60 text-sm">${Math.round(minTemp)}°</div>
-        <div class="text-white/70 text-xs mt-2">${t.weatherConditions[weatherCode] || t.weatherConditions[0]}</div>
-      `;
 
-      forecastContainer.appendChild(dayElement);
+        <div class="text-white/70 text-xs mt-2">${t.weatherConditions[weatherCode] || t.weatherConditions[0]}</div>
+      `
+
+      forecastContainer.appendChild(card);
 
       // Animate in 
 
       setTimeout(() =>{
-        dayElement.style.transition ='all 0.5s ease-out';
-        dayElement.style.opacity = '1';
-        dayElement.style.transform = 'translateY(0)';
+        card.style.transition ='all 0.5s ease-out';
+        card.style.opacity = '1';
+        card.style.transform = 'translateY(0)';
       }, 200 + (i * 100));
     }
   }
@@ -852,43 +873,6 @@ style.textContent = `
       opacity: 1;
       transform: translateY(0);
     }
-  }
-
-  // Radio button styling 
-
-  input[type="radio"]{
-    appearance: none;
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    width: 16px;
-    height: 16px;
-    border: 2px solid #fff;
-    border-radius: 50%;
-    background: transparent;
-    position: relative;
-    cursor: pointer;
-    margin-right: 12px;
-  }
-
-  input[type="radio"]:checked{
-    background: #3b82f6;
-    border-color: #3b82f6;
-  }
-
-  input[type="radio"]:checked::after{
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: white;
-  }
-
-  input[type="radio"]:hover{
-    border-color: #60a5fa;
   }
 `;
 
