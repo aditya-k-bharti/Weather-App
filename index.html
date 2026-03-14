@@ -60,8 +60,8 @@
           <div class="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400">🔍</div>
         </div>
         <div class="flex gap-3 mt-4 justify-center">
-          <button id="searchBtn" class="bg-white/20 backdrop-blur-md text-white px-6 py-2 rounded-full hover:bg-white/30 transition-all duration-300 shadow-lg hover:shadow-xl transfrom hover:scale-105 font-medium">Search Weather</button>
-          <button id="locationBtn" class="bg-white/20 backdrop-blur-md text-white px-6 py-2 rounded-full hover:bg-white/30 transition-all duration-300 shadow-lg hover;shadow-xl transform hover:scale-105 font-medium">📍 My Location</button>
+          <button id="searchBtn" class="bg-white/20 backdrop-blur-md text-white px-6 py-2 rounded-full hover:bg-white/30 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 font-medium">Search Weather</button>
+          <button id="locationBtn" class="bg-white/20 backdrop-blur-md text-white px-6 py-2 rounded-full hover:bg-white/30 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 font-medium">📍 My Location</button>
         </div>
       </div>
      </div>
@@ -80,7 +80,7 @@
           <div class="flex items-center justify-center gap-8 mb-6 flex-wrap">
             <div class="text-center">
               <div id="weatherIcon" class="text-8xl mb-2">🌤️</div>
-              <div id="weatherDescription" class="text-white/80 text-lg capitalize font-medium">Party Cloudy</div>
+              <div id="weatherDescription" class="text-white/80 text-lg capitalize font-medium">Partly Cloudy</div>
             </div>
 
             <div class="text-center">
@@ -91,39 +91,46 @@
 
           <!-- Weather Details Grid -->
 
-          <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-8">
-            <div class="bg-white/10 rounded-2xl p-4 text-center hover:bg-white/20 transition-all duration-300">
+          <div class="flex overflow-x-auto gap-4 mt-8 pb-2 weather-scroll">
+            <div class="min-w-[250px] bg-white/10 rounded-2xl p-4 text-center hover:bg-white/20 transition-all duration-300">
               <div class="text-3xl mb-2">💨</div>
               <div class="text-white/80 text-sm font-medium">Wind Speed</div>
               <div id="windSpeed" class="text-white font-semibold text-lg">15km/h</div>
             </div>
 
-            <div class="bg-white/10 rounded-2xl p-4 text-center hover:bg-white/20 transition-all duration-300">
+            <div class="min-w-[250px] bg-white/10 rounded-2xl p-4 text-center hover:bg-white/20 transition-all duration-300">
               <div class="text-3xl mb-2">💧</div>
               <div class="text-white/80 text-sm font-medium">Humidity</div>
               <div id="humidity" class="text-white font-semibold text-lg">65%</div>
             </div>
 
-            <div class="bg-white/10 rounded-2xl p-4 text-center hover:bg-white/20 transition-all duration-300">
+            <div class="min-w-[250px] bg-white/10 rounded-2xl p-4 text-center hover:bg-white/20 transition-all duration-300">
               <div class="text-3xl mb-2">👁️</div>
               <div class="text-white/80 text-sm font-medium">Visibility</div>
               <div id="visibility" class="text-white font-semibold text-lg">10 km</div>
             </div>
 
-            <div class="bg-white/10 rounded-2xl p-4 text-center hover:bg-white/20 transition-all duration-300">
+            <div class="min-w-[250px] bg-white/10 rounded-2xl p-4 text-center hover:bg-white/20 transition-all duration-300">
               <div class="text-3xl mb-2">🌡️</div>
               <div class="text-white/80 text-sm font-medium">Pressure</div>
               <div id="pressure" class="text-white font-semibold text-lg">1013 hPa</div>
+            </div>
+
+            <div class="min-w-[250px] bg-white/10 rounded-2xl p-4 text-center hover:bg-white/20 transition-all duration-300">
+              <div class="text-3xl mb-2">🌿</div>
+              <div class="text-white/80 text-sm font-medium">AQI</div>
+              <div id="aqi" class="text-white font-semibold text-lg">--</div>
+              <div id="aqiLabel" class="text-white/60 text-xs mt-1">--</div>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- 5-Day Forecast -->
+      <!-- 7-Day Forecast -->
 
       <div class="bg-white/10 backdrop-blur-md rounded-3xl p-8 shadow-2xl animate-slide-up">
-        <h3 class="text-white text-2xl font-semibold mb-6 text-center">5-Day Forecast</h3>
-        <div id="forecast" class="grid grid-cols-1 md:grid-cols-5 gap-4">
+        <h3 class="text-white text-2xl font-semibold mb-6 text-center">7-Day Forecast</h3>
+        <div id="forecast" class="flex gap-4 overflow-x-auto pb-2 weather-scroll">
           <!-- Forecast items will be populated by JavaScript -->
         </div>
       </div>
@@ -139,10 +146,32 @@
 
    <!-- Footer -->
 
-   <footer class="text-center text-white/60 py-8">
-    <p class="text-sm">Weather data provided by Open-Meteo • Built with HTML, CSS/TailwindCSS & JavaScript</p>
-    <p class="text-xs mt-2">© 2025 Weather App - All rights reserved</p>
-   </footer>
+  <footer class="bg-black/20 backdrop-blur-md mt-12">
+    <div class="max-w-6xl mx-auto px-4 py-8 text-white">
+      <div class="grid md:grid-cols-3 gap-8 text-center md:text-left">
+        <div>
+          <h3 class="text-xl font-semibold mb-2">Weather App</h3>
+          <p class="text-white/70 text-sm">Real-time weather updates powered by Open-Meteo API</p>
+        </div>
+
+        <div>
+          <h3 class="text-lg font-semibold mb-2">Features</h3>
+          <ul class="text-white/70 text-sm space-y-1">
+            <li>Live Weather</li>
+            <li>7 Day Forecast</li>
+            <li>Air Quality Index</li>
+            <li>Location Search</li>
+          </ul>
+        </div>
+
+        <div>
+          <h3 class="text-lg font-semibold mb-2">Developer</h3>
+          <p class="text-white/70 text-sm">Built using HTML, CSS/TailwindCSS & JavaScript</p>
+        </div>
+      </div>
+      <div class="border-t border-white/20 mt-6 pt-4 text-center text-white/60 text-sm">© 2026 Weather App • All rights reserved</div>
+    </div>
+  </footer>
    
   <script src="Weather.js"></script>
 </body>

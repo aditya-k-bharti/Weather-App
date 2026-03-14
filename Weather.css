@@ -1,6 +1,24 @@
 /* Custom Styles for Weather App */
 
+body{
+transition: background 0.5s ease;
+}
+
 /* Smooth scrollbar */
+
+.weather-scroll{
+overflow-x:auto;
+scroll-behavior:smooth;
+}
+
+.weather-scroll::-webkit-scrollbar{
+height:6px;
+}
+
+.weather-scroll::-webkit-scrollbar-thumb{
+background:rgba(255,255,255,0.4);
+border-radius:10px;
+}
 
 ::-webkit-scrollbar{
   width: 8px;
@@ -103,7 +121,7 @@
   background: linear-gradient(135deg, #636e72, #2d3436);
 }
 
-.weaather-rain{
+.weather-rain{
   background: linear-gradient(135deg, #74b9ff, #0984e3);
 }
 
@@ -145,7 +163,7 @@
   animation: pulse-glow 2s infinite;
 }
 
-@keyframes pluse-glow{
+@keyframes pulse-glow{
   0%, 100%{
     box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
   }
@@ -181,7 +199,7 @@ button:focus{
 }
 
 .weather-icon-rainy{
-  animation: bounce 1s ease-in-out infinte alternate;
+  animation: bounce 1s ease-in-out infinite alternate;
 }
 
 @keyframes bounce{

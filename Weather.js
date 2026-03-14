@@ -5,29 +5,29 @@ class WeatherApp{
     this.currentLanguage = 'en';  //Default to English
     this.translations = {
       hi: {
-        loading: 'मौसम डेटा लोड हो रहा है...',
-        pleaseWait: 'कृपया प्रतीक्षा करे',
-        searchWeather: 'मौसम खोजे',
-        myLocation: '📍 मेरा स्थान',
-        enterCity: 'कृपया शहर का नाम दर्ज करे',
-        searching: '⌛ खोज रहे है...',
-        gettingLocation: '⌛ Location प्राप्त कर रहे है...',
-        feelsLike: 'महसूस होता है',
-        windSpeed: 'हवा की गति',
-        humidity: 'नमी',
-        visibility: 'दृशियता',
-        pressure: 'दबाव',
-        forecast5Day: '5-दिन का पुर्वामान',
-        cityNotFound: 'शहर नहीं मिला। कृपया पुनः प्रयास करे।',
+        loading:                 'मौसम डेटा लोड हो रहा है...',
+        pleaseWait:              'कृपया प्रतीक्षा करे',
+        searchWeather:           'मौसम खोजे',
+        myLocation:              '📍 मेरा स्थान',
+        enterCity:               'कृपया शहर का नाम दर्ज करे',
+        searching:               '⌛ खोज रहे है...',
+        gettingLocation:         '⌛ Location प्राप्त कर रहे है...',
+        feelsLike:               'महसूस होता है',
+        windSpeed:               'हवा की गति',
+        humidity:                'नमी',
+        visibility:              'दृशियता',
+        pressure:                'दबाव',
+        forecast5Day:            '5-दिन का पुर्वामान',
+        cityNotFound:            'शहर नहीं मिला। कृपया पुनः प्रयास करे।',
         geoLocationNotSupported: 'Geolocation इस browser में supported नहीं है',
-        locationError: 'आपका location प्राप्त नहीं हो सका। कृपया manually search करे',
-        yourLocation: 'आपका स्थान',
-        days: ['आज', 'कल', 'बुधवार', 'गुरुवार', 'शुक्रवार'],
+        locationError:           'आपका location प्राप्त नहीं हो सका। कृपया manually search करे',
+        yourLocation:            'आपका स्थान',
+        days:                    ['आज', 'कल', 'बुधवार', 'गुरुवार', 'शुक्रवार'],
         weatherConditions: {
-          0: 'साफ आसमान',
-          1: 'मुख्यतः साफ',
-          2: 'आंशिक बादल',
-          3: 'बादल छाए हुए है',
+          0:  'साफ आसमान',
+          1:  'मुख्यतः साफ',
+          2:  'आंशिक बादल',
+          3:  'बादल छाए हुए है',
           45: 'कोहरा',
           48: 'जमा हुआ कोहरा',
           51: 'हल्की बूंदाबांदी',
@@ -41,11 +41,13 @@ class WeatherApp{
           75: 'तेज बर्फबारी',
           95: 'तूफ़ान'
         },
-        appTitle: 'मौसम ऐप',
-        appSubtitle: 'किसी भी स्थान के लिए real-time मौसम अपडेट प्राप्त करे',
+        aqi:             'वायु गुणवत्ता',
+        aqiLabel:        {good: 'अच्छा', moderate: 'मध्यम', unhealthySensitive: 'संवेदनशील के लिए अस्वस्थ', unhealthy: 'अस्वस्थ', veryUnhealthy: 'बहुत अस्वस्थ', hazardous: 'खतरनाक'},
+        appTitle:        'मौसम ऐप',
+        appSubtitle:     'किसी भी स्थान के लिए real-time मौसम अपडेट प्राप्त करे',
         cityPlaceholder: 'शहर का नाम दर्ज करे...',
-        settings: 'सेटिंग्स',
-        Language: 'भाषा'
+        settings:        'सेटिंग्स',
+        Language:        'भाषा'
       },
       en:{
         loading: 'Loading Weather Data...',
@@ -58,14 +60,14 @@ class WeatherApp{
         feelsLike: 'Feels like',
         windSpeed: 'Wind Speed',
         humidity: 'Humidity',
-        visibility: 'Vsibility',
+        visibility: 'Visibility',
         pressure: 'Pressure',
         forecast5Day: '5-Day Forecast',
         cityNotFound: 'City not found. Please try again.',
         geoLocationNotSupported: 'Geolocation is not supported by this browser.',
         locationError: 'Unable to get your location. Please search manually.',
         yourLocation: 'Your Location',
-        days: ['Today', 'Tommorow', 'Wednesday', 'Thursday', 'Friday'],
+        days: ['Today', 'Tomorrow', 'Wednesday', 'Thursday', 'Friday'],
         weatherConditions: {
           0: 'Clear Sky',
           1: 'Mainly Clear',
@@ -84,6 +86,8 @@ class WeatherApp{
           75: 'Heavy Snow',
           95: 'Thunderstrom'
         },
+        aqi:             'AQI',
+        aqiLabel:        {good: 'Good', moderate: 'Moderate', unhealthySensitive: 'Unhealthy for Sensitive', unhealthy: 'unhealthy', veryUnhealthy: 'Very Unhealthy', hazardous: 'Hazardous'},
         appTitle: 'Weather App',
         appSubtitle: 'Get real-time weather updates for any location',
         cityPlaceholder: 'Enter city name...',
@@ -219,7 +223,7 @@ class WeatherApp{
     // Update weather details labels if weather is displayed
 
     const weatherContainer = document.getElementById('weatherContainer');
-    if(!weatherContainer.classList.contains('hidden')){
+    if(weatherContainer && !weatherContainer.classList.contains('hidden')){
       this.updateWeatherLabels();
     }
   }
@@ -388,7 +392,7 @@ class WeatherApp{
         'ahmedabad': {lat: 23.9124, lon: 72.7873},
         'jaipur': {lat: 26.8467, lon: 75.7873},
         'gorakhpur': {lat: 26.7606, lon: 83.3732},
-        'lucknow': {lat: 26.8467, lon: 75.7873},
+        'lucknow': {lat: 26.8467, lon: 80.9462},
         'london': {lat: 51.5074, lon: -0.1278},
         'new york': {lat: 40.7128, lon: -74.0060},
         'tokyo': {lat: 35.6762, lon: 139.6503},
@@ -405,13 +409,16 @@ class WeatherApp{
     try {
       const response = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true&hourly=temperature_2m,relative_humidity_2m,wind_speed_10m,weather_code,visibility&daily=weather_code,temperature_2m_max,temperature_2m_min&timezone=auto`);
 
-      if(!response){
+      if(!response.ok){
         throw new Error('Weather API request failed');
       }
 
       const data = await response.json();
       this.displayWeather(data, locationName);
       this.hideError();
+
+      // Fetch AQI Data separately
+      this.fetchAQI(lat, lon);
     } catch (error) {
       console.error('Error fetching weather:', error);
 
@@ -419,7 +426,56 @@ class WeatherApp{
 
       const mockData = this.getMockWeatherData(locationName);
       this.displayWeather(mockData, locationName);
+      this.fetchAQI(lat, lon);  // Still attempt to fetch AQI data
     }
+  }
+
+  async fetchAQI(lat, lon){
+    const t = this.translations[this.currentLanguage];
+    const aqiEl = document.getElementById('aqi');
+    const aqiLabelEl = document.getElementById('aqiLabel');
+
+    try{
+      const response = await fetch(`https://air-quality-api.open-meteo.com/v1/air-quality?latitude=${lat}&longitude=${lon}&current=us_aqi,pm10,pm2_5`);
+
+      if(!response.ok){
+        throw new Error('AQI API request failed');
+      }
+
+      const data = await response.json();
+      const aqiValue = data?.current?.us_aqi;
+
+      if(aqiValue !== undefined && aqiValue !== null){
+        if(aqiEl) aqiEl.textContent = aqiValue;
+        if(aqiLabelEl){
+          const levelInfo = this.getAQILevel(aqiValue, t);
+          aqiLabelEl.textContent = levelInfo.label;
+          aqiLabelEl.style.color = levelInfo.color;
+        }
+      } else{
+        if(aqiEl) aqiEl.textContent = '--';
+        if(aqiLabelEl) aqiLabelEl.textContent = '--';
+      }
+    } catch (error){
+      console.error('Error fetching AQI:', error);
+      // Fallback: show random AQI for demo
+      const fallbackAqi = Math.floor(50 + Math.random() * 100);
+      if(aqiEl) aqiEl.textContent = fallbackAqi;
+      if(aqiLabelEl){
+        const levelInfo = this.getAQILevel(fallbackAqi, t);
+        aqiLabelEl.textContent = levelInfo.label;
+        aqiLabelEl.style.color = levelInfo.color;
+      }
+    }
+  }
+
+  getAQILevel(aqi, t){
+    if(aqi <= 50) return { label: t.aqiLabel.good, color: '#00e400' };
+    if(aqi <= 100) return { label: t.aqiLabel.moderate, color: '#ffff00' };
+    if(aqi <= 150) return { label: t.aqiLabel.unhealthySensitive, color: '#ff7e00' };
+    if(aqi <= 200) return { label: t.aqiLabel.unhealthy, color: '#ff0000' };
+    if(aqi <= 300) return { label: t.aqiLabel.veryUnhealthy, color: '#8f3f97' };
+    return { label: t.aqiLabel.hazardous, color: '#7e0023' };
   }
 
   getMockWeatherData(locationName){
@@ -564,7 +620,7 @@ class WeatherApp{
 
     const detailsGrid = document.querySelector('.grid.grid-cols-2.md\\:grid-cols-4');
     if(detailsGrid){
-      const labels = [t.windSpeed, t.humidity, t.visibility, t.pressure];
+      const labels = [t.windSpeed, t.humidity, t.visibility, t.pressure, t.aqi];
       const labelElements = detailsGrid.querySelectorAll('.text-white\\/80.text-sm');
 
       labelElements.forEach((element, index)=>{
@@ -590,7 +646,7 @@ class WeatherApp{
 
     const weekDays = this.currentLanguage == 'hi' ? ['रविवार', 'सोमवार', 'मंगलवार', 'बुधवार', 'गुरुवार', 'शुक्रवार', 'शनिवार'] : ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
-    for(let i = 0; i < 5; i++){
+    for(let i = 0; i < 7; i++){
       const dateObj = new Date();
       dateObj.setDate(today.getDate() + i);
 
@@ -598,7 +654,7 @@ class WeatherApp{
       if(i === 0){
         label = this.currentLanguage === 'hi' ? 'आज' : 'Today';
       } else if(i === 1){
-        label = this.currentLanguage === 'hi' ? 'कल' : 'Tommorow'
+        label = this.currentLanguage === 'hi' ? 'कल' : 'Tomorrow'
       } else{
         label = weekDays[dateObj.getDay()];
       }
@@ -612,7 +668,7 @@ class WeatherApp{
       const minTemp = dailyData?.temperature_2m_min?.[i] ?? 18;
 
       const card = document.createElement('div');
-      card.className = 'bg-white/10 rounded-2xl p-4 text-center interactive-card transform transition-all duration-300 hover:scale-105';
+      card.className = 'min-w-[250px] bg-white/10 rounded-2xl p-4 text-center interactive-card transform transition-all duration-300 hover:scale-105';
 
       card.innerHTML = `
         <div class="text-white font-semibold mb-1">${label}</div>
