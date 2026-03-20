@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Weather App - Real-time Weather Updates</title>
   <link rel="stylesheet" href="Weather.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
   <script src="https://cdn.tailwindcss.com">
     tailwind.config = {
       theme: {
@@ -58,6 +59,7 @@
         <div class="relative">
           <input type="text" id="cityInput" placeholder="Enter city name..." class="w-full px-4 py-3 pl-12 rounded-full border-0 shadow-lg focus:outline-none focus:ring-4 focus:ring-white/30 text-gray-700 text-lg">
           <div class="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400">🔍</div>
+          <div id="suggestions" class="absolute top-full left-0 bg-white rounded-xl mt-2 w-full hidden shadow-lg z-50"></div>
         </div>
         <div class="flex gap-3 mt-4 justify-center">
           <button id="searchBtn" class="bg-white/20 backdrop-blur-md text-white px-6 py-2 rounded-full hover:bg-white/30 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 font-medium">Search Weather</button>
@@ -71,7 +73,10 @@
      <div id="weatherContainer" class="hidden">
       <!-- Current Weather Card -->
 
-      <div class="bg-white/10 backdrop-blur-md rounded-3xl p-8 mb-8 shadow-2xl animate-bounce-in">
+      <div class="bg-white/10 backdrop-blur-md rounded-3xl p-8 mb-8 shadow-2xl animate-bounce-in relative">
+        <div class="text-center mt-4">
+          <button id="favBtn" class="absolute top-4 right-4 bg-yellow-400 text-black px-4 py-1 rounded-full font-semibold hover:bg-yellow-300 hover:scale-110 transition"><i class="bi bi-star"></i> Add</button>
+        </div>
         <div class="text-center">
           <div id="currentLocation" class="text-white text-2xl font-semibold mb-4 flex items-center justify-center gap-2">
             📍<span id="locationName">Loading...</span>
@@ -126,13 +131,24 @@
         </div>
       </div>
 
+      <!-- Hourly Forecast -->
+      <div class="bg-white/10 backdrop-blur-md rounded-3xl p-8 mb-8 shadow-2xl">
+        <h3 id="hourlyTitle" class="text-white text-2xl font-semibold mb-6 text-center">Hourly Forecast</h3>
+        <div id="hourlyForecast" class="flex gap-4 overflow-x-auto pb-2 weather-scroll"></div>
+      </div>
+
       <!-- 7-Day Forecast -->
 
       <div class="bg-white/10 backdrop-blur-md rounded-3xl p-8 shadow-2xl animate-slide-up">
-        <h3 class="text-white text-2xl font-semibold mb-6 text-center">7-Day Forecast</h3>
+        <h3 id="forecastTitle" class="text-white text-2xl font-semibold mb-6 text-center">7-Day Forecast</h3>
         <div id="forecast" class="flex gap-4 overflow-x-auto pb-2 weather-scroll">
           <!-- Forecast items will be populated by JavaScript -->
         </div>
+      </div>
+
+      <div id="favContainer" class="bg-white/10 backdrop-blur-md rounded-3xl p-6 mt-6 shadow-2xl">
+        <h3 class="text-white text-xl font-semibold mb-4 text-center">Favourite Locations</h3>
+        <div id="favList" class="flex flex-wrap gap-3 justify-center"></div>
       </div>
      </div>
 
@@ -166,7 +182,7 @@
 
         <div>
           <h3 class="text-lg font-semibold mb-2">Developer</h3>
-          <p class="text-white/70 text-sm">Built using HTML, CSS/TailwindCSS & JavaScript</p>
+          <p class="text-white/70 text-sm">Aditya Kumar • Built using HTML, CSS/TailwindCSS & JavaScript</p>
         </div>
       </div>
       <div class="border-t border-white/20 mt-6 pt-4 text-center text-white/60 text-sm">© 2026 Weather App • All rights reserved</div>

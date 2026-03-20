@@ -17,7 +17,8 @@ class WeatherApp{
         humidity:                'नमी',
         visibility:              'दृशियता',
         pressure:                'दबाव',
-        forecast5Day:            '5-दिन का पुर्वामान',
+        hourlyForecast:          "पुर्वामान",
+        forecast7Day:            '7-दिन का पुर्वामान',
         cityNotFound:            'शहर नहीं मिला। कृपया पुनः प्रयास करे।',
         geoLocationNotSupported: 'Geolocation इस browser में supported नहीं है',
         locationError:           'आपका location प्राप्त नहीं हो सका। कृपया manually search करे',
@@ -62,7 +63,8 @@ class WeatherApp{
         humidity: 'Humidity',
         visibility: 'Visibility',
         pressure: 'Pressure',
-        forecast5Day: '5-Day Forecast',
+        hourlyForecast: "Hourly Forecast",
+        forecast7Day: '7-Day Forecast',
         cityNotFound: 'City not found. Please try again.',
         geoLocationNotSupported: 'Geolocation is not supported by this browser.',
         locationError: 'Unable to get your location. Please search manually.',
@@ -98,11 +100,25 @@ class WeatherApp{
     this.init();
   }
 
+  startAutoRefresh(){
+    setInterval(() => {
+      if(document.visibilityState === 'visible' && this.lastCoords){
+        this.getWeatherByCoords(
+          this.lastCoords.lat,
+          this.lastCoords.lon,
+          this.lastLocationName
+        );
+      }
+    }, 300000);
+  }
+
   init(){
     this.createLanguageSettings();
     this.bindEvents();
     this.updateLanguage();
     this.loadDefaultWeather();
+    this.loadFavorites();
+    this.startAutoRefresh();
     setTimeout(() => {
       this.hideLoading();
     }, 1500);
@@ -247,9 +263,14 @@ class WeatherApp{
 
     // Update forecast title
 
-    const forecastTitle = document.querySelector('h3');
+    const forecastTitle = document.getElementById('forecastTitle');
     if(forecastTitle){
-      forecastTitle.textContent = t.forecast5Day;
+      forecastTitle.textContent = t.forecast7Day;
+    }
+
+    const hourlyTitle = document.getElementById('hourlyTitle');
+    if(hourlyTitle){
+      hourlyTitle.textContent = "Hourly Forecast";
     }
 
     // Update feels like text 
@@ -280,6 +301,135 @@ class WeatherApp{
           this.searchWeather();
         }
       });
+
+      let timer;
+
+      cityInput.addEventListener('input', (e) => {
+        clearInterval(timer);
+        clearTimeout(this.suggestionTimer);
+
+        const query = e.target.value.trim();
+        if(query.length < 2){
+          document.getElementById("suggestions").classList.add('hidden');
+          return;
+        }
+
+        timer = setTimeout(async () => {
+          try {
+            const res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${query}`);
+            const data = await res.json();
+
+            this.showSuggestions(data);
+          } catch (err) {
+            console.error(err);
+          }
+        }, 300);
+      });
+    }
+
+    const favBtn = document.getElementById('favBtn');
+    if(favBtn){
+      favBtn.addEventListener('click', ()=>{
+        this.addFavorite(
+          this.lastLocationName,
+          this.currentLat,
+          this.currentLon
+        );
+      });
+    }
+  }
+
+  showSuggestions(data){
+    const box = document.getElementById('suggestions');
+    box.innerHTML = '';
+
+    data.slice(0,5).forEach(place =>{
+      const item = document.createElement('div');
+      item.textContent = place.display_name;
+      item.className = 'p-2 hover:bg-gray-200 cursor-pointer text-black';
+
+      item.onclick = () =>{
+        document.getElementById('cityInput').value = place.display_name;
+        box.classList.add('hidden');
+
+        this.getWeatherByCoords(
+          parseFloat(place.lat),
+          parseFloat(place.lon),
+          place.display_name
+        );
+      };
+      box.appendChild(item);
+    });
+    box.classList.remove('hidden');
+    clearTimeout(this.suggestionTimer);
+    this.suggestionTimer = setTimeout(() =>{
+      box.classList.add('hidden');
+    }, 3000);
+  }
+
+  addFavorite(city, lat, lon){
+    let fav = JSON.parse(localStorage.getItem('favorites')) || [];
+    if(fav.some(f => f.city === city)){
+      this.toggleFavoriteIcon(true);
+      return;
+    }
+
+    fav.push({city, lat, lon});
+    localStorage.setItem('favorites', JSON.stringify(fav));
+
+    this.loadFavorites();
+    this.toggleFavoriteIcon(true);
+  }
+
+  loadFavorites(){
+    const container = document.getElementById('favList');
+    const favBox = document.getElementById('favContainer');
+    container.innerHTML = '';
+
+    let fav = JSON.parse(localStorage.getItem('favorites')) || [];
+
+    if(fav.length === 0){
+      favBox.classList.add('hidden');
+      return;
+    } else{
+      favBox.classList.remove('hidden');
+    }
+
+    fav.forEach((item, index) =>{
+      const div = document.createElement('div');
+      div.className = 'bg-white text-black px-3 py-1 rounded-full flex items-center gap-2 cursor-pointer';
+
+      div.innerHTML = `
+        <span>${item.city}</span>
+        <button class="text-red-500"><i class='bi bi-x'></i></button>
+      `;
+
+      div.onclick = (e) => {
+        if(e.target.tagName !== 'BUTTON'){
+          this.getWeatherByCoords(item.lat, item.lon, item.city);
+        }
+      };
+
+      div.querySelector('button').onclick = (e) =>{
+        e.stopPropagation();
+
+        fav.splice(index, 1);
+        localStorage.setItem('favorites', JSON.stringify(fav));
+
+        this.loadFavorites();
+        this.toggleFavoriteIcon(false);
+      };
+      container.appendChild(div);
+    });
+  }
+
+  toggleFavoriteIcon(isFav){
+    const btn = document.getElementById('favBtn');
+    if(!btn) return;
+    if(isFav){
+      btn.innerHTML = '<i class="bi bi-star-fill"></i>';
+    } else{
+      btn.innerHTML = '<i class="bi bi-star"></i>'
     }
   }
 
@@ -406,6 +556,9 @@ class WeatherApp{
   }
 
   async getWeatherByCoords(lat, lon, locationName){
+    this.currentLat = lat;
+    this.currentLon = lon;
+
     try {
       const response = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true&hourly=temperature_2m,relative_humidity_2m,wind_speed_10m,weather_code,visibility&daily=weather_code,temperature_2m_max,temperature_2m_min&timezone=auto`);
 
@@ -589,6 +742,7 @@ class WeatherApp{
 
     // Update forecast 
 
+    this.displayHourly(data.hourly);
     this.displayForecast(data.daily, t);
 
     // Update background based on weather 
@@ -607,12 +761,22 @@ class WeatherApp{
       weatherContainer.style.opacity = '0';
       weatherContainer.style.transform = 'translateY(20px)';
 
+      this.lastCoords = {
+        lat: this.currentLat,
+        lon: this.currentLon
+      };
+      this.lastLocationName = locationName;
+
       setTimeout(() =>{
         weatherContainer.style.transition = 'all 0.6s ease-out';
         weatherContainer.style.opacity = '1';
         weatherContainer.style.transform = 'translateY(0)';
       }, 100);
     }
+
+    const fav = JSON.parse(localStorage.getItem('favorites')) || [];
+    const isFav = fav.some(f => data.city === locationName);
+    this.toggleFavoriteIcon(isFav);
   }
 
   updateWeatherDetailsLabels(t){
@@ -632,9 +796,14 @@ class WeatherApp{
 
     // Update forecast title 
 
-    const forecastTitle = document.querySelector('h3');
+    const forecastTitle = document.getElementById('forecastTitle');
     if(forecastTitle){
-      forecastTitle.textContent = t.forecast5Day;
+      forecastTitle.textContent = t.forecast7Day;
+    }
+
+    const hourlyTitle = document.getElementById('hourlyTitle');
+    if(hourlyTitle){
+      hourlyTitle.textContent = "Hourly Forecast";
     }
   }
 
@@ -691,6 +860,54 @@ class WeatherApp{
         card.style.opacity = '1';
         card.style.transform = 'translateY(0)';
       }, 200 + (i * 100));
+    }
+  }
+
+  displayHourly(hourly){
+    const container = document.getElementById('hourlyForecast');
+    if(!container) return;
+
+    container.innerHTML = '';
+
+    const now = new Date();
+    const currentHour = now.getHours();
+    
+    const startIndex = hourly.time.findIndex(t => {
+      return new Date(t).getHours() === currentHour;
+    });
+
+    for(let i = startIndex; i < startIndex + 12; i++){
+      const index = i % hourly.time.length;
+      const temp = hourly.temperature_2m[index];
+      const weatherCode = hourly.weather_code?.[index] || 0;
+      const time = new Date(hourly.time[index]);
+      // time.setHours(time.getHours() + i);
+
+      const formattedTime = time.toLocaleTimeString([],{
+        hour: 'numeric',
+        hour12: true
+      });
+
+      const hour = time.getHours();
+      const isNight = hour >= 18 || hour < 6;
+
+      let icon = this.getWeatherIcon(weatherCode);
+      if(isNight){
+        if(weatherCode === 0){
+          icon = '🌙';
+        } else if(weatherCode <= 3){
+          icon = '🌙☁️';
+        }
+      }
+
+      const card = `
+        <div class="min-w-[100px] bg-white/10 rounded-xl p-3 text-center">
+          <div class="text-white text-sm mb-1">${formattedTime}</div>
+          <div class="text-3xl mb-1">${icon}</div>
+          <div class="text-white font-bold text-lg">${Math.round(temp)}°</div>
+        </div>
+      `;
+      container.innerHTML += card;
     }
   }
 
